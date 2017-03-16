@@ -6,7 +6,8 @@ import org.kde.plasma.components 2.0 as Components
 Item {
   id: main
   
-  property int inhibitated: 0
+  property bool inhibitated: false
+  property bool has_inhibitions: false
   property string symbol: root.symbol_restrained
   property string color: root.color_restrained
   //
@@ -15,6 +16,28 @@ Item {
   property QtObject pmSource: PlasmaCore.DataSource {
     engine: "powermanagement"
     connectedSources: ["PowerDevil"]
+
+    onSourceAdded: {
+      disconnectSource(source);
+      connectSource(source);
+    }
+    onSourceRemoved: {
+      disconnectSource(source);
+    }
+    onDataChanged: {
+      if (typeof pmSource.data["Inhibitions"] !== "undefined") {
+        var has_inhibitions = false;
+        console.error("current inhibitions:");
+        for(var key in pmSource.data["Inhibitions"]) {
+          console.error(key);
+          has_inhibitions = true;
+        }
+        main.has_inhibitions = has_inhibitions;
+      }
+      if (!main.inhibitated) {  // aka. monitoring mode
+        updateIcon();
+      }
+    }
   }
   
   function toggleState() {
@@ -25,10 +48,9 @@ Item {
       var job = service.startOperationCall(op);
       job.finished.connect(function(job) {
         console.error("inhibitation disabled");
-        main.inhibitated = 0;
+        main.inhibitated = false;
         main.cookie = -1;
-        main.symbol = root.symbol_restrained;
-        main.color = root.color_restrained;
+        updateIcon();
       });
     } else {
       var service = pmSource.serviceForSource("PowerDevil")
@@ -37,11 +59,25 @@ Item {
       var job = service.startOperationCall(op);
       job.finished.connect(function(job) {
         console.error("inhibitation enabled");
-        main.inhibitated = 1;
+        main.inhibitated = true;
         main.cookie = job.result;
-        main.symbol = root.symbol_inhibitated;
-        main.color = root.color_inhibitated;
+        updateIcon();
       });
+    }
+  }
+
+  function updateIcon() {
+    if (main.inhibitated) {
+      main.symbol = root.symbol_inhibitated;
+      main.color = root.color_inhibitated;
+    } else {
+      if (main.has_inhibitions) {
+        main.symbol = root.symbol_inhibitions;
+        main.color = root.color_inhibitions;
+      } else {
+        main.symbol = root.symbol_restrained;
+        main.color = root.color_restrained;
+      }
     }
   }
 
