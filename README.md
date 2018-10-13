@@ -12,7 +12,7 @@ The current color indicates the state of automatic screen lock:
 ## Install
 ```
 $ git clone https://github.com/rpallai/dap-locksw
-$ plasmapkg2 -i dap-locksw
+$ kpackagetool5 -t Plasma/Applet -i dap-locksw/package
 ```
 Now add the widget to your panel. Search for the string "dap" in the widget list and choose "Dap's LockSwitch".
 
