@@ -3,6 +3,12 @@
 
 Small switch (plasmoid) for your Plasma panel to temporarily suspend automatic locking of the screen.
 
+The current color indicates the state of automatic screen lock:
+
+- Green: activated
+- Gray: inhibited by third party
+- Red: suspended by this switch
+
 ## Install
 ```
 $ git clone https://github.com/rpallai/dap-locksw
