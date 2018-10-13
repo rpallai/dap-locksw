@@ -1,8 +1,8 @@
 [Desktop Entry]
-Comment=
+Comment=Small switch to temporarily suspend automatic locking of the screen
 Encoding=UTF-8
-Icon=
-Keywords=
+Icon=system-lock-screen
+Keywords=lock
 Name=Dap's LockSwitch
 Type=Service
 X-KDE-ParentApp=
